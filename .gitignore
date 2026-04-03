@@ -1,0 +1,9 @@
+backend/venv
+backend/uploads
+backend/__pycache__
+.idea
+.vscode
+*.db
+.env
+node_modules
+.DS_Store

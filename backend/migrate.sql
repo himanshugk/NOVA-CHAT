@@ -1,0 +1,3 @@
+ALTER TABLE users ADD COLUMN otp VARCHAR;
+ALTER TABLE users ADD COLUMN otp_expires_at DATETIME;
+ALTER TABLE users ADD COLUMN demographic_tag VARCHAR DEFAULT 'Adult';
