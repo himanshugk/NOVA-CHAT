@@ -185,6 +185,10 @@ class ResetPassword(BaseModel):
 @router.post("/forgot-password")
 def forgot_password_route(data: ForgotPassword, db: Session = Depends(get_db)):
     otp = auth_service.generate_reset_token(db, data.email)
+    
+    if otp == "ACTIVE_OTP_EXISTS":
+        raise HTTPException(status_code=429, detail="An active OTP was already sent. Please wait 5 minutes before requesting another.")
+        
     if otp:
         import smtplib
         from email.mime.text import MIMEText

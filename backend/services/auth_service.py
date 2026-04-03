@@ -29,6 +29,8 @@ def authenticate_user(db: Session, email: str, password: str):
     user = db.query(User).filter(User.email == email).first()
     if not user:
         return None
+    if not user.password_hash:
+        return None
     if not verify_password(password, user.password_hash):
         return None
     return user
@@ -75,6 +77,9 @@ def generate_reset_token(db: Session, email: str):
         return None
     from datetime import datetime, timedelta
     import random
+    
+    if user.otp and user.otp_expires_at and user.otp_expires_at > datetime.utcnow():
+        return "ACTIVE_OTP_EXISTS"
     
     expire = datetime.utcnow() + timedelta(minutes=5)
     otp = str(random.randint(100000, 999999))

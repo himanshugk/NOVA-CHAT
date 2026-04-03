@@ -1,9 +1,23 @@
-backend/venv
-backend/uploads
-backend/__pycache__
-.idea
-.vscode
-*.db
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Logs
+*.log
+
+# Node
+node_modules/
+dist/
+
+# Env
 .env
-node_modules
+
+# OS
 .DS_Store
+
+# Database
+*.db
+
+# Uploads
+uploads/
