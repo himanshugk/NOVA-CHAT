@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginUser, guestLogin, linkAccount, registerUser, socialLogin, requestPasswordReset } from "../services/authService";
+import { loginUser, guestLogin, linkAccount, registerUser, socialLogin, requestPasswordReset, resetPassword } from "../services/authService";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
@@ -118,7 +118,6 @@ const Auth = () => {
         alert("OTP expired. Request a new one.");
         return;
       }
-      const { resetPassword } = await import("../services/authService");
       const res = await resetPassword(email, otp, password);
       if (res.message && res.message.includes("successfully")) {
         alert(res.message);
