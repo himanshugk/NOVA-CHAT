@@ -200,21 +200,6 @@ const Chat = () => {
             receiver_id: roomId
         }));
 
-        setMessages((prev) => [
-            ...prev,
-            {
-                id: Date.now() + Math.random(),
-                text: inputText,
-                isMine: true,
-                sender: "Me",
-                fileUrl: attachmentUrl,
-                isImage: attachmentType.startsWith("image/"),
-                isVideo: attachmentType.startsWith("video/"),
-                isOtherFile: !!attachmentUrl && !attachmentType.startsWith("image/") && !attachmentType.startsWith("video/"),
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }
-        ]);
-
         setInputText("");
         setAttachmentUrl("");
         setAttachmentType("");

@@ -59,9 +59,35 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                 db.close()
 
             if receiver_id:
+                user_is_active = str(receiver_id) in manager.active_connections if hasattr(manager, 'active_connections') else False
+                
                 await manager.send_personal_message(message_payload, str(receiver_id))
                 if str(receiver_id) != str(user_id):
                     await manager.send_personal_message(message_payload, str(user_id))
+                    
+                # Push Notification Logic
+                db = SessionLocal()
+                try:
+                    from models.user import User
+                    target_user = db.query(User).filter(User.id == receiver_id).first()
+                    if target_user and target_user.push_subscription:
+                        import json
+                        import os
+                        from pywebpush import webpush
+                        try:
+                            sub_info = json.loads(target_user.push_subscription)
+                            vapid_private_key = os.getenv("VAPID_PRIVATE_KEY", "uO1xR0w-QJ6ZtI-sD5hMw1xQwH0k2n5_K_rN7x8A9Ew") # Placeholder but valid format for dev
+                            vapid_claims = {"sub": "mailto:admin@nova.com"}
+                            webpush(
+                                subscription_info=sub_info,
+                                data=json.dumps({"title": "NOVA-CHAT", "body": "You have a new encrypted message", "url": "/chat"}),
+                                vapid_private_key=vapid_private_key,
+                                vapid_claims=vapid_claims
+                            )
+                        except Exception as pe:
+                            print(f"WebPush Error: {pe}")
+                finally:
+                    db.close()
             else:
                 await manager.broadcast(message_payload)
 

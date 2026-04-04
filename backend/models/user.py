@@ -23,6 +23,10 @@ class User(Base):
     desktop_session_id = Column(String, nullable=True)
     mobile_session_id = Column(String, nullable=True)
     
+    # NEW FIELDS:
+    public_key = Column(String, nullable=True)
+    push_subscription = Column(String, nullable=True)
+    
     created_at = Column(DateTime, default=datetime.utcnow)
     otp = Column(String, nullable=True)
     otp_expires_at = Column(DateTime, nullable=True)

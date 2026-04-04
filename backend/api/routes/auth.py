@@ -174,6 +174,45 @@ def delete_user_me(
     db.commit()
     return {"message": "User successfully deleted"}
 
+class PublicKeyUpdate(BaseModel):
+    public_key: str
+
+@router.post("/public-key")
+def update_public_key(
+    data: PublicKeyUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    current_user.public_key = data.public_key
+    db.commit()
+    return {"message": "Public key uploaded successfully"}
+
+@router.get("/public-key/{user_id}")
+def get_public_key(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not user.public_key:
+        raise HTTPException(status_code=404, detail="User has no public key enrolled")
+    return {"public_key": user.public_key}
+
+class PushSubscription(BaseModel):
+    subscription: str
+
+@router.post("/push-subscription")
+def update_push_subscription(
+    data: PushSubscription,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    current_user.push_subscription = data.subscription
+    db.commit()
+    return {"message": "Push subscription saved successfully"}
+
 class ForgotPassword(BaseModel):
     email: str
 
