@@ -20,7 +20,8 @@ def add_contact(payload: AddContactRequest, db: Session = Depends(get_db), curre
     if current_user.is_guest:
         raise HTTPException(status_code=403, detail="Guests cannot add contacts")
         
-    friend = db.query(User).filter(User.username == payload.username).first()
+    from sqlalchemy import func
+    friend = db.query(User).filter(func.lower(User.username) == func.lower(payload.username)).first()
     if not friend:
         raise HTTPException(status_code=404, detail="Pilot not found")
         
