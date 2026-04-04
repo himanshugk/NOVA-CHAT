@@ -150,7 +150,16 @@ const Chat = () => {
             const data = event.data;
             try {
                 const parsed = JSON.parse(data);
-                if (parsed.room_id === activeContact?.id || (parsed.receiver_id === null && activeContact?.id === 1)) {
+                
+                const msgSender = parsed.sender_id?.toString();
+                const msgReceiver = parsed.receiver_id?.toString();
+                const myId = user?.id?.toString();
+                const contactId = activeContact?.id?.toString();
+                
+                const isGlobalChat = parsed.receiver_id === null && activeContact?.id === 1;
+                const isPrivateChatWithActive = (msgSender === myId && msgReceiver === contactId) || (msgReceiver === myId && msgSender === contactId);
+
+                if (isGlobalChat || isPrivateChatWithActive) {
                     const senderName = parsed.sender_id === (user?.id?.toString() || user?.id) ? "Me" : `Pilot ${parsed.sender_id}`;
                     const isMine = parsed.sender_id === user?.id?.toString() || parsed.sender_id === user?.id;
                     const dec = decryptPayload(parsed.content);
